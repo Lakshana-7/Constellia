@@ -1,0 +1,572 @@
+/* ==========================================================================
+   CONSTELLIA CORE INTERACTION STYLES
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000000;
+    font-family: 'Rajdhani', sans-serif;
+    color: #ffffff;
+}
+
+/* Layering canvases: Space background behind, interaction UI overlay in front */
+#space-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#ui-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none; /* Let clicks/gestures pass through safely */
+}
+
+/* Webcam viewfinder frame alignment */
+#webcam-container {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    width: 240px;
+    height: 180px;
+    border: 2px solid rgba(0, 255, 204, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 4;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+    background: #000;
+}
+
+#webcam {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Mirrors the webcam feed for natural interaction */
+    opacity: 0.65;
+}
+
+.viewfinder-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(0,255,204,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,204,0.07) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+/* Heads Up Display (HUD) status bar tracker */
+#hud {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 5, 15, 0.85);
+    border: 1px solid rgba(0, 255, 204, 0.4);
+    padding: 12px 35px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    z-index: 4;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+    text-align: center;
+    min-width: 450px;
+}
+
+/* Cinematic Full-Screen View Overlay States */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   FRONT LAUNCH SCREEN CELESTIAL BACKDROP (GALAXY SHOWS THROUGH)
+   ========================================================================== */
+#launch-screen {
+    background: transparent; /* Allows the 3D Three.js galaxy canvas to show behind the text instantly */
+    position: relative;
+    overflow: hidden;
+}
+
+.launch-content {
+    text-align: center;
+    z-index: 6; /* Ensures content stays safely in front of background stars */
+}
+
+.title {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: 12px;
+    color: #ffffff;
+    text-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: #a0c4ff;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+#enter-btn {
+    background: transparent;
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    padding: 15px 40px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+}
+
+#enter-btn:hover {
+    background: #00ffcc;
+    color: #000000;
+    box-shadow: 0 0 25px #00ffcc;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.fade-in {
+    animation: fadeInAnimation 1.5s forwards;
+}
+
+@keyframes fadeInAnimation {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Alert Notification Modals positioning */
+.popup-panel {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid #ff00ff;
+    padding: 30px 50px;
+    text-align: center;
+    z-index: 10;
+    border-radius: 6px;
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.3);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hidden-popup {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.8);
+    pointer-events: none;
+}
+
+.visible-popup {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.glitch-text {
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: #ff00ff;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+#galaxy-title {
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   INTERACTIVE DASHBOARD LAYOUT MODELS (REVISED FOR LAPTOP VIEWPORTS)
+   ========================================================================== */
+.dashboard-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    /* Increased from 55% to 65% to guarantee full card content is legible */
+    height: 65%; 
+    background: linear-gradient(to top, rgba(0, 3, 10, 0.98) 80%, rgba(0, 8, 20, 0.9));
+    border-top: 3px solid #00ffff;
+    z-index: 8;
+    padding: 25px 45px; /* Tighter baseline padding to optimize vertical real estate */
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -15px 35px rgba(0, 255, 255, 0.1);
+    overflow-y: auto; /* Fail-safe vertical scroll wrapper for ultra-compact displays */
+}
+
+.hidden-dashboard {
+    transform: translateY(100%);
+}
+
+.visible-dashboard {
+    transform: translateY(0%);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.dashboard-header span {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+.close-dash-btn {
+    background: transparent;
+    border: none;
+    color: #ff0055;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.close-dash-btn:hover {
+    text-shadow: 0 0 10px #ff0055;
+}
+
+.dash-main-title {
+    font-size: 32px; /* Marginally scaled down to free up vertical canvas room */
+    letter-spacing: 3px;
+    margin-bottom: 3px;
+}
+
+.dash-desc {
+    font-size: 14px;
+    color: #a0c4ff;
+    margin-bottom: 20px;
+    font-weight: 300;
+}
+
+/* Standard structural flex-grid layouts */
+.matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; /* Reduced step size to cleanly cluster layout cards */
+}
+
+.matrix-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 15px 20px; /* Compact structural card inner insulation padding */
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    
+    /* Enforces column layout flow to push interactive targets downwards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 240px; 
+}
+
+.matrix-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--theme-color, #00ffff);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.card-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--theme-color, #00ffff);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.matrix-card h3 {
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.matrix-card p {
+    font-size: 13px; /* Scaled down slightly to comfortably wrap multi-line text */
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+    font-weight: 300;
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   PHASE 8 & 9: CINEMATIC GLOW ANIMATIONS & SUBJECT THEMES
+   ========================================================================== */
+.pulse-glow {
+    animation: textGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255, 0, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.5);
+    }
+}
+
+.theme-networking { --theme-color: #00ffcc; border-color: #00ffcc !important; box-shadow: 0 -15px 35px rgba(0, 255, 204, 0.1); }
+.theme-analog { --theme-color: #ff9900; border-color: #ff9900 !important; box-shadow: 0 -15px 35px rgba(255, 153, 0, 0.1); }
+.theme-dsa { --theme-color: #3388ff; border-color: #3388ff !important; box-shadow: 0 -15px 35px rgba(51, 136, 255, 0.1); }
+
+/* Reactive Matrix-Card states for hand positioning overlays */
+.matrix-card.dimmed {
+    opacity: 0.25;
+    transform: scale(0.95);
+    filter: blur(1px);
+}
+
+.matrix-card.active-card {
+    opacity: 1 !important;
+    transform: translateY(-10px) scale(1.03);
+    border-color: var(--theme-color, #00ffff) !important;
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px var(--theme-color, #00ffff);
+    filter: none !important;
+}
+
+/* ==========================================================================
+   PHASE 10: MICRO-QUIZZES & INTERACTIVE SELECTION UX
+   ========================================================================== */
+.quiz-container {
+    margin-top: auto; /* Dynamic margin anchorage forces quiz container down to card base */
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.quiz-question {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #ffffff;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.quiz-options {
+    display: flex;
+    gap: 8px;
+}
+
+.quiz-opt-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 6px 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+/* Enhanced dynamic selection states when hand hovers over nodes */
+.matrix-card.active-card .quiz-opt-btn {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.quiz-opt-btn.correct-flash {
+    background: rgba(0, 255, 204, 0.2) !important;
+    border-color: #00ffcc !important;
+    color: #00ffcc !important;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+    font-weight: 700;
+}
+
+.quiz-opt-btn.wrong-flash {
+    background: rgba(255, 0, 85, 0.15) !important;
+    border-color: #ff0055 !important;
+    color: #ff0055 !important;
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   PHASE 11: COSMIC SPEED-RUN OVERLAYS & ALERTS
+   ========================================================================== */
+
+/* Mode Switch Button styling up on the main HUD layer */
+#mode-toggle-container {
+    position: absolute;
+    top: 32px;
+    right: 40px;
+    z-index: 100;
+}
+
+#mode-btn {
+    background: rgba(0, 5, 15, 0.8);
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    padding: 10px 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+}
+
+#mode-btn.speed-run-active {
+    border-color: #ff0055;
+    color: #ff0055;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+}
+
+/* Speed-run state modifier: masks the descriptive summary text */
+.speed-run-hidden-text {
+    filter: blur(5px);
+    opacity: 0.15;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Emergency Screen Flash overlay when timer ticks dangerously low */
+.emergency-flash {
+    animation: panicFlash 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes panicFlash {
+    from { box-shadow: inset 0 0 0px rgba(255, 0, 85, 0); }
+    to { box-shadow: inset 0 0 50px rgba(255, 0, 85, 0.4); background: rgba(255, 0, 85, 0.05); }
+}
+
+/* ==========================================================================
+   PHASE 12: DEEP-DIVE INSPECTION SIDEBAR (SLIDES FROM RIGHT)
+   ========================================================================== */
+#deep-dive-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100%;
+    background: rgba(0, 4, 12, 0.98);
+    border-left: 2px solid #ffff00;
+    z-index: 12;
+    padding: 35px 25px;
+    box-shadow: -15px 0 35px rgba(255, 255, 0, 0.08);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden-sidebar {
+    transform: translateX(100%);
+}
+
+.visible-sidebar {
+    transform: translateX(0%);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-header span {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #ffff00;
+    font-weight: 700;
+}
+
+.close-sidebar-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.close-sidebar-btn:hover {
+    color: #ff0055;
+}
+
+#sidebar-title {
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.sidebar-note-block {
+    background: rgba(255, 255, 0, 0.02);
+    border: 1px solid rgba(255, 255, 0, 0.1);
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 15px;
+    animation: slideInNote 0.4s ease forwards;
+}
+
+@keyframes slideInNote {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}

@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSTELLIA - Phase 11 Cosmic Speed-Run Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <canvas id="space-canvas"></canvas>
+    <canvas id="ui-canvas"></canvas>
+
+    <div id="mode-toggle-container" class="hidden">
+        <button id="mode-btn" onclick="toggleSessionMode()">MODE: STUDY SELECTION</button>
+    </div>
+
+    <div id="webcam-container">
+        <video id="webcam" autoplay playsinline></video>
+        <div class="viewfinder-grid"></div>
+    </div>
+
+    <div id="launch-screen" class="screen">
+        <div class="launch-content">
+            <h1 class="title">CONSTELLIA</h1>
+            <p class="subtitle">Gesture-Controlled Learning Universe</p>
+            <button id="enter-btn" onclick="enterUniverse()">[ Enter Universe ]</button>
+        </div>
+    </div>
+
+    <div id="universe-screen" class="screen hidden">
+        <div id="hud">INITIALIZING INTERACTION ENGINE...</div>
+    </div>
+
+    <div id="alert-popup" class="popup-panel hidden-popup">
+        <div class="glitch-text">CONSTELLATION IDENTIFIED</div>
+        <h2 id="galaxy-title" class="pulse-glow">INITIALIZING CORE DATA...</h2>
+        <p>Initializing spatial learning nodes...</p>
+    </div>
+
+    <div id="learning-dashboard" class="dashboard-panel hidden-dashboard">
+        <div class="dashboard-header">
+            <span id="dash-core-tag">🌌 SYSTEM ARCHITECTURE CORE</span>
+            <button class="close-dash-btn" onclick="closeDashboard()">[ CLOSE SYSTEM ]</button>
+        </div>
+        <h1 class="dash-main-title" id="dash-main-title">ACADEMIC MATRIX</h1>
+        <p class="dash-desc" id="dash-instruction">Hover over any active star node in the sky. Pinch with your thumb and index finger to select a quiz answer.</p>
+        
+        <div class="matrix-grid" id="matrix-grid-container">
+            </div>
+    </div>
+    <div id="deep-dive-panel" class="hidden-sidebar">
+    <div class="sidebar-header">
+        <span id="sidebar-tag">SYSTEM CORE EXTENSION</span>
+        <button onclick="closeSidebar()" class="close-sidebar-btn">[ ESCAPE DEEP DATA ]</button>
+    </div>
+    <h2 id="sidebar-title">NODE ADVANCED INSIGHTS</h2>
+    <hr style="border: 0; border-top: 1px dashed rgba(0,255,204,0.2); margin: 15px 0;">
+    <div id="sidebar-content">
+        </div>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+// --- COGNITIVE KNOWLEDGE DATABASE MATRIX WITH EXTENDED DEPTH ---
+const subjectDatabase = {
+    3: {
+        title: "🌐 COMPUTER NETWORKS GALAXY",
+        tag: "NETWORKING // OSI_MODEL",
+        theme: "theme-networking",
+        labels: ["OSI Layer", "TCP/IP Protocol", "Routing Table"],
+        cards: [
+            { 
+                tag: "NODE_01 // ARCHITECTURE", title: "OSI Reference Model", desc: "A 7-layer structural framework conceptualizing data flows across hardware channels.",
+                quiz: { q: "Which layer manages physical bits transmission?", a1: "Data Link", a2: "Physical", correct: 2 },
+                extendedNotes: [
+                    "🔹 <b>Layer 1 (Physical):</b> Manages electrical voltages, fiber-optic light pulses, and raw bit-stream transmissions.",
+                    "🔹 <b>Layer 2 (Data Link):</b> Responsible for node-to-node data transfer and framing (MAC addressing).",
+                    "🔹 <b>Layer 3 (Network):</b> Handles packet routing via IP addressing across multiple networks."
+                ]
+            },
+            { 
+                tag: "NODE_02 // TRANSPORT", title: "TCP/IP Suite Flow", desc: "The foundational transmission handshake engine prioritizing bulletproof state connections.",
+                quiz: { q: "Is TCP a connectionless protocol?", a1: "True", a2: "False", correct: 2 },
+                extendedNotes: [
+                    "🔹 <b>Three-Way Handshake:</b> Client sends SYN ➔ Server responds with SYN-ACK ➔ Client returns ACK.",
+                    "🔹 <b>Sliding Window:</b> Dynamically adjusts packet flow rate based on network congestion buffers.",
+                    "🔹 <b>Error Control:</b> Re-transmits lost packets automatically using sequence numbers."
+                ]
+            },
+            { 
+                tag: "NODE_03 // ROUTING", title: "Dynamic Routing Nodes", desc: "Intelligent background calculations passing topological tables to resolve lowest latency paths.",
+                quiz: { q: "Which protocol handles global internet routing?", a1: "BGP", a2: "OSPF", correct: 1 },
+                extendedNotes: [
+                    "🔹 <b>OSPF (Open Shortest Path First):</b> An interior gateway protocol using Dijkstra's algorithm.",
+                    "🔹 <b>BGP (Border Gateway Protocol):</b> The routing engine holding the core map of the global Internet.",
+                    "🔹 <b>Metrics:</b> Paths are calculated using hop counts, bandwidth constraints, and link reliability."
+                ]
+            }
+        ]
+    },
+    4: {
+        title: "🔌 ANALOG ELECTRONIC CIRCUITS",
+        tag: "ELECTRONICS // WAVE_FORM",
+        theme: "theme-analog",
+        labels: ["Op-Amp", "BJT Transistor", "Filter Net"],
+        cards: [
+            { 
+                tag: "NODE_01 // AMPLIFICATION", title: "Operational Amplifiers", desc: "High-gain integrated voltage control instruments manipulating feedback configurations.",
+                quiz: { q: "An ideal Op-Amp has zero input impedance.", a1: "True", a2: "False", correct: 2 },
+                extendedNotes: [
+                    "🔹 <b>Golden Rules:</b> Infinite input impedance (no current enters inputs) and zero output impedance.",
+                    "🔹 <b>Virtual Ground:</b> Feedback forces the inverting and non-inverting inputs to hold equal voltages.",
+                    "🔹 <b>Gain Configuration:</b> Closed-loop gain is defined strictly by external resistor ratios ($A_v = 1 + R_f / R_in$)."
+                ]
+            },
+            { 
+                tag: "NODE_02 // SEMICONDUCTOR", title: "BJT Transistor States", desc: "Current-driven semiconductor gates modulating charge carriers through collector-base regions.",
+                quiz: { q: "What drives a BJT transistor operation?", a1: "Voltage", a2: "Current", correct: 2 },
+                extendedNotes: [
+                    "🔹 <b>Three Regions:</b> Cutoff (fully off), Active (linear amplifier), and Saturation (fully turned on switch).",
+                    "🔹 <b>Current Control:</b> A tiny base current controls a massive collector-emitter current channel ($I_c = \beta \cdot I_b$).",
+                    "🔹 <b>Configurations:</b> Common-Emitter is widely preferred for generating high voltage gains."
+                ]
+            },
+            { 
+                tag: "NODE_03 // PROCESSING", title: "Active Filter Arrays", desc: "Frequency selective attenuation networks utilizing specific capacitors and resistors to isolate noise.",
+                quiz: { q: "What filter passes low frequencies cleanly?", a1: "Low-Pass", a2: "High-Pass", correct: 1 },
+                extendedNotes: [
+                    "🔹 <b>Cutoff Frequency:</b> The threshold boundary where output power drops to 70.7% ($-3\text{dB}$ point).",
+                    "🔹 <b>Roll-off Rate:</b> A standard single-pole passive filter falls off at a predictable rate of $-20\text{dB}$ per decade.",
+                    "🔹 <b>Active vs Passive:</b> Active filters integrate operational amplifiers so the signal does not lose power."
+                ]
+            }
+        ]
+    },
+    5: {
+        title: "🌲 DATA STRUCTURES & ALGORITHMS",
+        tag: "DSA // COMPUTATIONAL_LOGIC",
+        theme: "theme-dsa",
+        labels: ["Graph Root", "Balanced Tree", "Hash Map"],
+        cards: [
+            { 
+                tag: "NODE_01 // STRUCTURES", title: "Non-Linear Graph Maps", desc: "Adjacency matrix networks mapping deep real-world relationship vertices.",
+                quiz: { q: "Which traversal uses a Queue structure?", a1: "BFS", a2: "DFS", correct: 1 },
+                extendedNotes: [
+                    "🔹 <b>Breadth-First Search (BFS):</b> Explores neighbor nodes level by level using a Queue data structure.",
+                    "🔹 <b>Depth-First Search (DFS):</b> Dives down a single path fully before backtracking using a Stack loop.",
+                    "🔹 <b>Representations:</b> Stored cleanly in memory via Adjacency Matrices or Adjacency Linked Lists."
+                ]
+            },
+            { 
+                tag: "NODE_02 // OPTIMIZATION", title: "Asymptotic Big-O Complexities", desc: "Strict algorithmic efficiency constraints bounding worst-case execution performance scaling patterns.",
+                quiz: { q: "What is Binary Search complexity?", a1: "O(N)", a2: "O(log N)", correct: 2 },
+                extendedNotes: [
+                    "🔹 <b>$O(1)$ Constant:</b> Execution speed remains perfectly identical regardless of database sizing.",
+                    "🔹 <b>$O(\log N)$ Logarithmic:</b> Execution cuts search workspace directly in half every round (e.g., Binary Search).",
+                    "🔹 <b>$O(N^2)$ Quadratic:</b> Nested double loop scans that degrade heavily under high data scaling loads."
+                ]
+            },
+            { 
+                tag: "NODE_03 // SORTING", title: "Divide & Conquer Sorting", desc: "Logarithmic recursive sorting models executing optimized workspace arrays.",
+                quiz: { q: "Is QuickSort an example of Divide & Conquer?", a1: "Yes", a2: "No", correct: 1 },
+                extendedNotes: [
+                    "🔹 <b>Merge Sort:</b> Splits arrays recursively in half, sorts individual sides, and blends them back in $O(N \log N)$.",
+                    "🔹 <b>Quick Sort:</b> Randomly elects a pivot item, clustering lower metrics left and higher variables right.",
+                    "🔹 <b>Space Overheads:</b> Merge Sort demands extra memory arrays ($O(N)$), while Quick Sort runs efficiently in-place."
+                ]
+            }
+        ]
+    }
+};
+
+        // --- SPACE RENDER ENGINE CONSTANTS ---
+        let scene, camera, renderer, starSystem, spaceMeshGroup;
+        let particleGeometry, particleSystem; 
+        let warpSpeed = false;
+        let cameraZoomIn = false; 
+        let warpIntensity = 1; 
+        const clock = new THREE.Clock();
+
+        // --- APPARATUS TRACKING ARRAYS ---
+        const videoElement = document.getElementById('webcam');
+        const uiCanvas = document.getElementById('ui-canvas');
+        const uiCtx = uiCanvas.getContext('2d');
+        const hud = document.getElementById('hud');
+        let handsTracker;
+
+        let userStars = [];        
+        let userConnections = [];  
+        let selectedStarIndex = null; 
+        let galaxyCreated = false; 
+        let hoveredStarIndex = null; 
+        let lastTrackedHoveredIndex = null;
+        let sidebarOpen = false;
+
+        // --- NEW SESSION PARAMETERS (SPEED-RUN CORE) ---
+        let currentSessionMode = "STUDY"; // Can be changed to "SPEEDRUN"
+        let speedRunTimerInterval = null;
+        let speedRunTimeRemaining = 45;
+        let speedRunCardsAnswered = []; // Stores indices of correctly cleared nodes
+
+        // --- MATHEMATICAL LERP SMOOTHING VALUES ---
+        let currentCursorX = window.innerWidth / 2;
+        let currentCursorY = window.innerHeight / 2;
+        const LERP_FACTOR = 0.25; 
+        let wasPinchingLastFrame = false; 
+
+        // --- NATIVE REAL-TIME AUDIO CONTROLLER ---
+        const AudioEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            },
+            playTone(freq, type, duration, slideTo = 0) {
+                if (!this.ctx) return;
+                try {
+                    let osc = this.ctx.createOscillator();
+                    let gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo > 0) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            playHapticPop() { this.playTone(180, 'sine', 0.08); },
+            playLinkChime() { this.playTone(440, 'triangle', 0.15, 880); },
+            playSuccessChord() {
+                let time = 0;
+                [261.63, 329.63, 392.00, 523.25].forEach((freq, idx) => {
+                    setTimeout(() => this.playTone(freq, 'sine', 0.4), time);
+                    time += 80;
+                });
+            },
+            playQuizCorrect() { this.playTone(600, 'sine', 0.2, 1200); },
+            playQuizWrong() { this.playTone(220, 'sawtooth', 0.25, 110); },
+            playSpeedRunVictory() {
+                let base = 523.25;
+                for(let i=0; i<6; i++) {
+                    setTimeout(() => this.playTone(base * (1 + i*0.25), 'sine', 0.15), i*100);
+                }
+            }
+        };
+
+        uiCanvas.width = window.innerWidth;
+        uiCanvas.height = window.innerHeight;
+
+        function init3DSpace() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5; 
+
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('space-canvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 1);
+
+            spaceMeshGroup = new THREE.Group();
+            scene.add(spaceMeshGroup);
+
+            const starGeometry = new THREE.BufferGeometry();
+            const starCount = 2500;
+            const positions = new Float32Array(starCount * 3);
+
+            for (let i = 0; i < starCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 1000;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
+            }
+
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const textureLoader = new THREE.TextureLoader();
+            const starTexture = textureLoader.load('https://threejs.org/examples/textures/sprites/circle.png');
+
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xffffff, size: 1.5, map: starTexture,
+                transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false
+            });
+
+            starSystem = new THREE.Points(starGeometry, starMaterial);
+            spaceMeshGroup.add(starSystem);
+
+            const pCount = 200;
+            particleGeometry = new THREE.BufferGeometry();
+            const pPositions = new Float32Array(pCount * 3);
+            const pVelocities = [];
+
+            for (let i = 0; i < pCount; i++) {
+                pPositions[i * 3] = 0;
+                pPositions[i * 3 + 1] = 0;
+                pPositions[i * 3 + 2] = -999; 
+                pVelocities.push(new THREE.Vector3(0, 0, 0));
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+            const pMaterial = new THREE.PointsMaterial({
+                color: 0xff00ff, size: 0.4, map: starTexture,
+                transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false
+            });
+
+            particleSystem = new THREE.Points(particleGeometry, pMaterial);
+            particleSystem.userData = { velocities: pVelocities, active: false, age: 0 };
+            scene.add(particleSystem);
+
+            animate();
+        }
+
+        function triggerParticleExplosion(colorHex = 0xff00ff) {
+            const positions = particleGeometry.attributes.position.array;
+            const velocities = particleSystem.userData.velocities;
+            
+            particleSystem.material.color.setHex(colorHex);
+            particleSystem.material.opacity = 1.0;
+            particleSystem.userData.active = true;
+            particleSystem.userData.age = 0;
+
+            for (let i = 0; i < velocities.length; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 2;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 2;
+                positions[i * 3 + 2] = 2; 
+
+                velocities[i].set(
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.1
+                );
+            }
+            particleGeometry.attributes.position.needsUpdate = true;
+        }
+
+        function toggleSessionMode() {
+            if (galaxyCreated) return; // Disallow shifting modes mid-run
+            const btn = document.getElementById('mode-btn');
+            
+            if (currentSessionMode === "STUDY") {
+                currentSessionMode = "SPEEDRUN";
+                btn.innerText = "MODE: SPEED-RUN TRACKING";
+                btn.classList.add('speed-run-active');
+                hud.innerText = "SPEED-RUN LOADED. FINISHING CONSTELLATIONS TRIGGERS TIME ATTACK.";
+                hud.style.color = "#ff0055";
+            } else {
+                currentSessionMode = "STUDY";
+                btn.innerText = "MODE: STUDY SELECTION";
+                btn.classList.remove('speed-run-active');
+                hud.innerText = "STUDY ARCHITECTURE LOADED. RE-ENGAGING LEARNING INTERFACES.";
+                hud.style.color = "#00ffcc";
+            }
+            AudioEngine.playHapticPop();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            starSystem.rotation.y = time * 0.005;
+            starSystem.rotation.x = time * 0.002;
+
+            if (particleSystem.userData.active) {
+                const positions = particleGeometry.attributes.position.array;
+                const velocities = particleSystem.userData.velocities;
+                particleSystem.userData.age += 0.016;
+
+                for (let i = 0; i < velocities.length; i++) {
+                    positions[i * 3] += velocities[i].x;
+                    positions[i * 3 + 1] += velocities[i].y;
+                    positions[i * 3 + 2] += velocities[i].z;
+                }
+                particleGeometry.attributes.position.needsUpdate = true;
+                
+                particleSystem.material.opacity = Math.max(0, 1.0 - (particleSystem.userData.age / 1.5));
+                if (particleSystem.material.opacity <= 0) {
+                    particleSystem.userData.active = false;
+                }
+            }
+
+            if (warpSpeed) {
+                camera.position.z -= 0.8;
+                warpIntensity = THREE.MathUtils.lerp(warpIntensity, 18.0, 0.1);
+                starSystem.scale.set(1, 1, warpIntensity); 
+                
+                if (camera.position.z < -20) {
+                    warpSpeed = false;
+                    camera.position.z = 5; 
+                }
+            } else if (cameraZoomIn) {
+                camera.position.z -= 0.10; 
+                spaceMeshGroup.rotation.z += 0.015; 
+                warpIntensity = THREE.MathUtils.lerp(warpIntensity, 6.0, 0.05);
+                starSystem.scale.set(1, 1, warpIntensity);
+                
+                if (camera.position.z <= 1.5) {
+                    cameraZoomIn = false; 
+                    
+                    const learningDash = document.getElementById('learning-dashboard');
+                    learningDash.classList.remove('hidden-dashboard');
+                    learningDash.classList.add('visible-dashboard');
+
+                    // --- START SPEED-RUN CRITICAL SESSION RUNTIME CLOCK ---
+                    if (currentSessionMode === "SPEEDRUN") {
+                        startSpeedRunCountdown();
+                    } else {
+                        hud.innerText = "🌌 SPATIAL CHANNELS RESOLVED. INTERACTIVE DATAFEED ACTIVE.";
+                        hud.style.color = "#ff00ff";
+                    }
+                }
+            } else {
+                warpIntensity = THREE.MathUtils.lerp(warpIntensity, 1.0, 0.08);
+                starSystem.scale.set(1, 1, warpIntensity);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function startSpeedRunCountdown() {
+            clearInterval(speedRunTimerInterval);
+            speedRunTimeRemaining = 45;
+            speedRunCardsAnswered = [];
+            document.body.classList.remove('emergency-flash');
+            
+            hud.innerText = `[ TIMER ACTIVE: ${speedRunTimeRemaining}s ] CRACK ALL CONSTELLATION CHALLENGES!`;
+            hud.style.color = "#ff0055";
+
+            speedRunTimerInterval = setInterval(() => {
+                speedRunTimeRemaining--;
+                
+                if (speedRunTimeRemaining <= 10) {
+                    document.body.classList.add('emergency-flash');
+                    AudioEngine.playHapticPop();
+                }
+
+                if (speedRunTimeRemaining <= 0) {
+                    handleSpeedRunFailure();
+                } else {
+                    hud.innerText = `[ TIMER ACTIVE: ${speedRunTimeRemaining}s ] CRACK ALL CONSTELLATION CHALLENGES!`;
+                }
+            }, 1000);
+        }
+
+        function handleSpeedRunFailure() {
+            clearInterval(speedRunTimerInterval);
+            document.body.classList.remove('emergency-flash');
+            AudioEngine.playQuizWrong();
+            
+            hud.innerText = "🚨 SURVIVAL CORE DEPLENISHED. WARPING BACK TO DECK CONFIG...";
+            hud.style.color = "#ff0055";
+
+            setTimeout(() => {
+                closeDashboard();
+            }, 2000);
+        }
+
+        function calculateDistance(point1, point2) {
+            return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2) + Math.pow(point1.z - point2.z, 2));
+        }
+
+        function initHandTracking() {
+            handsTracker = new Hands({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`
+            });
+            handsTracker.setOptions({
+                maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6
+            });
+            handsTracker.onResults(onHandResults);
+
+            const cameraSetup = new Camera(videoElement, {
+                onFrame: async () => { await handsTracker.send({image: videoElement}); },
+                width: 640, height: 480
+            });
+            cameraSetup.start().catch(err => console.error(err));
+        }
+
+        function onHandResults(results) {
+            uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
+
+            drawConstellations();
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (!galaxyCreated && selectedStarIndex === null) {
+                    if (currentSessionMode === "STUDY") {
+                        hud.innerText = `SPAWNED: ${userStars.length} NODES. PINCH TO ADD OR LINK THEM.`;
+                        hud.style.color = "#00ffcc";
+                    } else {
+                        hud.innerText = `[SPEEDRUN TARGETS: ${userStars.length}/5] PINCH NODES TO CONSTRUCT THREAT ARRAY.`;
+                        hud.style.color = "#ff0055";
+                    }
+                }
+
+                for (const landmarks of results.multiHandLandmarks) {
+                    const thumbTip = landmarks[4];  
+                    const indexTip = landmarks[8];  
+
+                    const targetX = (1 - indexTip.x) * uiCanvas.width;
+                    const targetY = indexTip.y * uiCanvas.height;
+
+                    currentCursorX += (targetX - currentCursorX) * LERP_FACTOR;
+                    currentCursorY += (targetY - currentCursorY) * LERP_FACTOR;
+
+                    const pinchDistance = calculateDistance(thumbTip, indexTip);
+                    const isPinching = pinchDistance < 0.045; 
+
+                    let lastHoveredIndex = hoveredStarIndex;
+                    hoveredStarIndex = null;
+                    for (let i = 0; i < userStars.length; i++) {
+                        let dist = Math.sqrt(Math.pow(userStars[i].x - currentCursorX, 2) + Math.pow(userStars[i].y - currentCursorY, 2));
+                        if (dist < 120) { 
+                            hoveredStarIndex = i; 
+                            break; 
+                        }
+                    }
+
+                    if (hoveredStarIndex !== null && hoveredStarIndex !== lastHoveredIndex) {
+                        AudioEngine.playHapticPop();
+                    }
+                    if (hoveredStarIndex !== null) {
+    if (hoveredStarIndex !== lastTrackedHoveredIndex) {
+        // Hand just landed on a new node: initialize timer
+        hoverStartTime = Date.now();
+        lastTrackedHoveredIndex = hoveredStarIndex;
+    } else if (hoverStartTime && !sidebarOpen && !warpSpeed && !cameraZoomIn) {
+        // Hand has been resting steadily on the same node
+        let durationHovered = Date.now() - hoverStartTime;
+        
+        if (durationHovered > 1500) { // 1.5 Seconds hold threshold met
+            triggerDeepDiveInspection(hoveredStarIndex);
+        }
+    }
+    
+    if (hoveredStarIndex !== lastHoveredIndex) {
+        AudioEngine.playHapticPop();
+    }
+} else {
+    // Hand slipped away from nodes: clear timers
+    hoverStartTime = null;
+    lastTrackedHoveredIndex = null;
+}
+                 
+                    if (galaxyCreated) {
+                        updateCardHighlightStates(hoveredStarIndex);
+                    }
+
+                    if (isPinching && !wasPinchingLastFrame) {
+                        if (hoveredStarIndex !== null) {
+                            if (galaxyCreated) {
+                                handleQuizGestureSelection(hoveredStarIndex);
+                            } else {
+                                if (selectedStarIndex === null) {
+                                    selectedStarIndex = hoveredStarIndex;
+                                    AudioEngine.playHapticPop();
+                                    hud.innerText = "⭐ NODE SELECTED! DRAG TO ANOTHER STAR TO CONNECT.";
+                                    hud.style.color = "#ffff00";
+                                } 
+                                else if (selectedStarIndex !== hoveredStarIndex) {
+                                    let connectionExists = userConnections.some(conn => 
+                                        (conn[0] === selectedStarIndex && conn[1] === hoveredStarIndex) || 
+                                        (conn[0] === hoveredStarIndex && conn[1] === selectedStarIndex)
+                                    );
+                                    if (!connectionExists) {
+                                        userConnections.push([selectedStarIndex, hoveredStarIndex]);
+                                        AudioEngine.playLinkChime();
+                                        hud.innerText = "⚡ CONSTELLATION VECTOR CONNECTED!";
+                                        hud.style.color = "#00ffcc";
+                                        checkConstellationRules();
+                                    }
+                                    selectedStarIndex = null; 
+                                }
+                            }
+                        } else {
+                            if (selectedStarIndex === null && !galaxyCreated && userStars.length < 5) {
+                                userStars.push({ x: currentCursorX, y: currentCursorY });
+                                AudioEngine.playHapticPop();
+                                hud.innerText = `✨ KNOWLEDGE NODE GENERATED! (${userStars.length} / 5 Max)`;
+                                hud.style.color = "#a0c4ff";
+                            }
+                        }
+                    }
+
+                    wasPinchingLastFrame = isPinching;
+
+                    if (isPinching) {
+                        uiCtx.beginPath();
+                        uiCtx.arc(currentCursorX, currentCursorY, 12, 0, 2 * Math.PI);
+                        uiCtx.strokeStyle = "#ffffff";
+                        uiCtx.lineWidth = 3;
+                        uiCtx.stroke();
+                    } else {
+                        if (selectedStarIndex !== null && userStars[selectedStarIndex]) {
+                            uiCtx.beginPath();
+                            uiCtx.moveTo(userStars[selectedStarIndex].x, userStars[selectedStarIndex].y);
+                            uiCtx.lineTo(currentCursorX, currentCursorY);
+                            uiCtx.strokeStyle = "rgba(0, 255, 255, 0.5)";
+                            uiCtx.lineWidth = 2;
+                            uiCtx.setLineDash([5, 5]); 
+                            uiCtx.stroke();
+                            uiCtx.setLineDash([]); 
+                        }
+
+                        uiCtx.beginPath();
+                        uiCtx.arc(currentCursorX, currentCursorY, 22, 0, 2 * Math.PI);
+                        uiCtx.strokeStyle = hoveredStarIndex !== null ? "#ffff00" : "rgba(0, 255, 255, 0.4)"; 
+                        uiCtx.lineWidth = hoveredStarIndex !== null ? 3 : 2;
+                        uiCtx.stroke();
+
+                        uiCtx.beginPath();
+                        uiCtx.arc(currentCursorX, currentCursorY, 5, 0, 2 * Math.PI);
+                        uiCtx.fillStyle = "#ffffff";
+                        uiCtx.shadowColor = hoveredStarIndex !== null ? "#ffff00" : "#00ffff";
+                        uiCtx.shadowBlur = 10;
+                        uiCtx.fill();
+                        uiCtx.shadowBlur = 0;
+                    }
+                }
+            } else {
+                wasPinchingLastFrame = false;
+                if (galaxyCreated) updateCardHighlightStates(null);
+            }
+        }
+
+        function updateCardHighlightStates(hoveredIndex) {
+            const cards = document.querySelectorAll('.matrix-card');
+            if (!cards || cards.length === 0) return;
+
+            cards.forEach((card, idx) => {
+                if (hoveredIndex === null) {
+                    card.classList.remove('active-card', 'dimmed');
+                } else if (idx === hoveredIndex % cards.length) {
+                    card.classList.add('active-card');
+                    card.classList.remove('dimmed');
+                } else {
+                    card.classList.add('dimmed');
+                    card.classList.remove('active-card');
+                }
+            });
+        }
+
+        function handleQuizGestureSelection(hoveredIdx) {
+            const totalNodes = userStars.length;
+            const dataConfig = subjectDatabase[totalNodes];
+            if (!dataConfig) return;
+
+            const cardIndex = hoveredIdx % dataConfig.cards.length;
+            const targetCardDOM = document.querySelectorAll('.matrix-card')[cardIndex];
+            if (!targetCardDOM) return;
+
+            const options = targetCardDOM.querySelectorAll('.quiz-opt-btn');
+            if (options.length === 0) return;
+
+            let selectedChoice = (currentCursorX < window.innerWidth / 2) ? 1 : 2;
+            let targetedBtn = options[selectedChoice - 1];
+            if (targetedBtn.classList.contains('correct-flash') || targetedBtn.classList.contains('wrong-flash')) return;
+
+            const targetQuizData = dataConfig.cards[cardIndex].quiz;
+            if (selectedChoice === targetQuizData.correct) {
+                targetedBtn.classList.add('correct-flash');
+                AudioEngine.playQuizCorrect();
+                
+                if (currentSessionMode === "SPEEDRUN" && !speedRunCardsAnswered.includes(cardIndex)) {
+                    speedRunCardsAnswered.push(cardIndex);
+                    checkSpeedRunVictoryCondition(dataConfig.cards.length);
+                } else {
+                    hud.innerText = "✓ EXCELLENT DECRYPT! MATRIX ANSWER VERIFIED.";
+                    hud.style.color = "#00ffcc";
+                }
+            } else {
+                targetedBtn.classList.add('wrong-flash');
+                AudioEngine.playQuizWrong();
+                
+                if (currentSessionMode === "SPEEDRUN") {
+                    // Penalty: Deduct 5 seconds for a wrong answer
+                    speedRunTimeRemaining = Math.max(0, speedRunTimeRemaining - 5);
+                    hud.innerText = "✕ WRONG INPUT! DISRUPTING MEMORY SHIELD (-5s)";
+                } else {
+                    hud.innerText = "✕ SYNTAX FAILURE. ATTEMPT PATH RELOCK.";
+                    hud.style.color = "#ff0055";
+                }
+            }
+        }
+
+        function checkSpeedRunVictoryCondition(totalRequired) {
+            if (speedRunCardsAnswered.length >= totalRequired) {
+                clearInterval(speedRunTimerInterval);
+                document.body.classList.remove('emergency-flash');
+                
+                AudioEngine.playSpeedRunVictory();
+                triggerParticleExplosion(0x00ffcc);
+                
+                hud.innerText = `🏆 SPEEDRUN VICTORY! MATRIX SECURED WITH ${speedRunTimeRemaining}s REMAINING!`;
+                hud.style.color = "#00ffcc";
+            }
+        }
+
+        function checkConstellationRules() {
+    if (galaxyCreated) return;
+
+    const totalNodes = userStars.length;
+    const minimumConnectionsRequired = totalNodes - 1; 
+
+    if (subjectDatabase[totalNodes] && userConnections.length >= minimumConnectionsRequired) {
+        galaxyCreated = true; 
+        document.getElementById('mode-toggle-container').classList.add('hidden'); // Lock mode picker
+        
+        const dataConfig = subjectDatabase[totalNodes];
+        
+        hud.innerText = "🔮 STRUCTURAL MATRIX DETECTED! INJECTING MODULES...";
+        hud.style.color = "#ff00ff";
+
+        let explosiveColorHex = 0xff00ff;
+        if(totalNodes === 3) explosiveColorHex = 0x00ffcc;
+        if(totalNodes === 4) explosiveColorHex = 0xff9900;
+        if(totalNodes === 5) explosiveColorHex = 0x3388ff;
+
+        triggerParticleExplosion(explosiveColorHex);
+        AudioEngine.playSuccessChord();
+
+        document.getElementById('galaxy-title').innerText = dataConfig.title;
+        document.getElementById('dash-core-tag').innerText = `🌌 ${dataConfig.tag}`;
+        document.getElementById('dash-main-title').innerText = dataConfig.title;
+
+        const dashboardPanel = document.getElementById('learning-dashboard');
+        dashboardPanel.className = `dashboard-panel hidden-dashboard ${dataConfig.theme}`;
+
+        // Swap sub-headers based on game stakes
+        const instructionText = document.getElementById('dash-instruction');
+        if (currentSessionMode === "SPEEDRUN") {
+            instructionText.innerText = "⚡ SPEED-RUN PROTOCOL ACTIVE: ALL SYLLABUS DATA HAS BEEN MASKED. CHOOSE ANSWERS BLINDLY VIA HAND TRACKING!";
+        } else {
+            instructionText.innerText = "Hover over any active star node in the sky to review your notes at your own pace.";
+        }
+
+        const gridContainer = document.getElementById('matrix-grid-container');
+        gridContainer.innerHTML = ''; 
+
+        dataConfig.cards.forEach(card => {
+            let cardHTML = '';
+            
+            if (currentSessionMode === "SPEEDRUN") {
+                // --- SPEEDRUN LAYOUT: Hide notes (blurred class) and SHOW the quiz box ---
+                cardHTML = `
+                    <div class="matrix-card">
+                        <div class="card-tag">${card.tag}</div>
+                        <h3>${card.title}</h3>
+                        <p class="dash-card-desc speed-run-hidden-text">${card.desc}</p>
+                        <div class="quiz-container">
+                            <div class="quiz-question">CHALLENGE: ${card.quiz.q}</div>
+                            <div class="quiz-options">
+                                <div class="quiz-opt-btn">[ L: ${card.quiz.a1} ]</div>
+                                <div class="quiz-opt-btn">[ R: ${card.quiz.a2} ]</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // --- STUDY LAYOUT: Show crisp, beautiful notes and REMOVE the quiz box entirely ---
+                cardHTML = `
+                    <div class="matrix-card">
+                        <div class="card-tag">${card.tag}</div>
+                        <h3>${card.title}</h3>
+                        <p class="dash-card-desc" style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.5;">${card.desc}</p>
+                    </div>
+                `;
+            }
+            
+            gridContainer.innerHTML += cardHTML;
+        });
+
+        const alertPopup = document.getElementById('alert-popup');
+        alertPopup.classList.remove('hidden-popup');
+        alertPopup.classList.add('visible-popup');
+
+        setTimeout(() => {
+            alertPopup.classList.remove('visible-popup');
+            alertPopup.classList.add('hidden-popup');
+            
+            cameraZoomIn = true;
+            
+            userStars.forEach((star, index) => {
+                if(dataConfig.labels[index]) {
+                    star.label = dataConfig.labels[index];
+                }
+            });
+        }, 3500);
+    }
+}
+
+        function drawConstellations() {
+            const time = Date.now() * 0.003;
+
+            userConnections.forEach(conn => {
+                const starA = userStars[conn[0]];
+                const starB = userStars[conn[1]];
+                if(starA && starB) {
+                    uiCtx.beginPath();
+                    uiCtx.moveTo(starA.x, starA.y);
+                    uiCtx.lineTo(starB.x, starB.y);
+                    uiCtx.strokeStyle = galaxyCreated ? "#ff00ff" : "#00ffff"; 
+                    uiCtx.lineWidth = 3;
+                    uiCtx.shadowColor = uiCtx.strokeStyle;
+                    uiCtx.shadowBlur = 15;
+                    uiCtx.stroke();
+                    uiCtx.shadowBlur = 0; 
+                }
+            });
+
+            userStars.forEach((star, index) => {
+                const isHovered = (index === hoveredStarIndex);
+                let pulsingSize = 8 + Math.sin(time + index) * 2; 
+                
+                if (isHovered) pulsingSize += 6; 
+
+                uiCtx.beginPath();
+                uiCtx.arc(star.x, star.y, pulsingSize + 8, 0, 2 * Math.PI);
+                
+                if (galaxyCreated) {
+                    uiCtx.fillStyle = isHovered ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.03)";
+                } else {
+                    uiCtx.fillStyle = isHovered ? "rgba(255, 255, 0, 0.2)" : "rgba(160, 196, 255, 0.15)";
+                }
+                uiCtx.fill();
+
+                uiCtx.beginPath();
+                uiCtx.arc(star.x, star.y, pulsingSize, 0, 2 * Math.PI);
+                uiCtx.fillStyle = "#ffffff";
+                
+                if (galaxyCreated) {
+                    uiCtx.shadowColor = isHovered ? "#ffffff" : "rgba(255,255,255,0.2)";
+                } else {
+                    uiCtx.shadowColor = isHovered ? "#ffff00" : "#a0c4ff";
+                }
+                uiCtx.shadowBlur = isHovered ? 25 : 10;
+                uiCtx.fill();
+                uiCtx.shadowBlur = 0;
+
+                if (isHovered && !galaxyCreated) {
+                    uiCtx.beginPath();
+                    uiCtx.arc(star.x, star.y, pulsingSize + 16, 0, 2 * Math.PI);
+                    uiCtx.strokeStyle = "rgba(255, 255, 0, 0.4)";
+                    uiCtx.lineWidth = 1;
+                    uiCtx.setLineDash([4, 4]);
+                    uiCtx.stroke();
+                    uiCtx.setLineDash([]);
+                }
+
+                if (star.label) {
+                    uiCtx.fillStyle = isHovered || !galaxyCreated ? "#ffffff" : "rgba(255,255,255,0.4)";
+                    uiCtx.font = isHovered ? "bold 18px Rajdhani" : "500 16px Rajdhani";
+                    uiCtx.textAlign = "center";
+                    uiCtx.fillText(star.label, star.x, star.y - 25);
+                }
+            });
+        }
+
+        function closeDashboard() {
+            closeSidebar();
+            clearInterval(speedRunTimerInterval);
+            document.body.classList.remove('emergency-flash');
+            
+            const learningDash = document.getElementById('learning-dashboard');
+            learningDash.classList.remove('visible-dashboard');
+            learningDash.classList.add('hidden-dashboard');
+            
+            galaxyCreated = false;
+            userStars = [];
+            userConnections = [];
+            camera.position.z = 5; 
+            spaceMeshGroup.rotation.z = 0;
+            selectedStarIndex = null; 
+            hoveredStarIndex = null;
+            speedRunCardsAnswered = [];
+            
+            particleSystem.material.opacity = 0;
+            particleSystem.userData.active = false;
+            
+            document.getElementById('mode-toggle-container').classList.remove('hidden'); // Bring picker selector back
+            AudioEngine.playHapticPop();
+            
+            if (currentSessionMode === "SPEEDRUN") {
+                hud.innerText = "SPEED-RUN RESET. MAP NODES TO TRY AGAIN.";
+                hud.style.color = "#ff0055";
+            } else {
+                hud.innerText = "SYSTEM RESET. CREATE A NEW COMBINATION.";
+                hud.style.color = "#00ffcc";
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uiCanvas.width = window.innerWidth;
+            uiCanvas.height = window.innerHeight;
+        });
+
+        init3DSpace();
+
+        // === PASTE THE TWO NEW FUNCTIONS HERE ===
+function triggerDeepDiveInspection(hoveredIdx) {
+    if (!galaxyCreated) return;
+    if (currentSessionMode === "SPEEDRUN") return; 
+    
+    const totalNodes = userStars.length;
+    const dataConfig = subjectDatabase[totalNodes];
+    if (!dataConfig) return;
+
+    const cardIndex = hoveredIdx % dataConfig.cards.length;
+    const selectedCardData = dataConfig.cards[cardIndex];
+    
+    if (!selectedCardData.extendedNotes) return;
+
+    sidebarOpen = true;
+    AudioEngine.playLinkChime();
+
+    document.getElementById('sidebar-tag').innerText = selectedCardData.tag;
+    document.getElementById('sidebar-title').innerText = `${selectedCardData.title} // EXTENDED`;
+    
+    const contentBox = document.getElementById('sidebar-content');
+    contentBox.innerHTML = "";
+    
+    selectedCardData.extendedNotes.forEach(note => {
+        contentBox.innerHTML += `<p class="sidebar-note-block">${note}</p>`;
+    });
+
+    const panel = document.getElementById('deep-dive-panel');
+    panel.classList.remove('hidden-sidebar');
+    panel.classList.add('visible-sidebar');
+    
+    hud.innerText = `🔍 EXPANDED CHANNELS ACQUIRED FOR: ${selectedCardData.title}`;
+    hud.style.color = "#ffff00";
+}
+
+function closeSidebar() {
+    sidebarOpen = false;
+    hoverStartTime = null;
+    
+    const panel = document.getElementById('deep-dive-panel');
+    panel.classList.remove('visible-sidebar');
+    panel.classList.add('hidden-sidebar');
+    
+    hud.innerText = "🌌 SPATIAL CHANNELS RESOLVED. INTERACTIVE DATAFEED ACTIVE.";
+    hud.style.color = "#00ffcc";
+    AudioEngine.playHapticPop();
+}
+
+        function enterUniverse() {
+            AudioEngine.init();
+            AudioEngine.playLinkChime();
+
+            const launchScreen = document.getElementById('launch-screen');
+            const universeScreen = document.getElementById('universe-screen');
+            launchScreen.classList.add('fade-out');
+            setTimeout(() => {
+                launchScreen.classList.add('hidden');
+                universeScreen.classList.remove('hidden');
+                universeScreen.classList.add('fade-in');
+                
+                document.getElementById('mode-toggle-container').classList.remove('hidden'); // Reveal mode selector
+                
+                warpSpeed = true; 
+                initHandTracking();
+            }, 1500); 
+        }
+    </script>
+</body>
+</html>
