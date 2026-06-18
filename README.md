@@ -1,38 +1,74 @@
-# 🌌 Constellia 
-> An interactive, gesture-controlled spatial learning universe that maps knowledge structures using computer vision.
+# 🌌 Constellia — Gesture-Controlled Learning Universe
+
+> *"Transforming static study data into an interactive, spatial universe."*
+
+![Constellia Preview](Constellia_.png)
 
 ---
 
-## 🚀 The Core Philosophy
-Ever since childhood, I've been fascinated by how stars form constellations—tiny, individual points coming together to create something meaningful. **Constellia** translates that wonder into architecture. 
+## ✨ What is Constellia?
 
-Instead of scrolling through flat, disconnected directories of PDFs or markdown files, Constellia uses computer vision and custom hand-gesture APIs to turn engineering concepts into an interactive, spatial web environment. No mouse, no keyboard—just your hands mapping out knowledge in real time.
+Constellia is a weekend experiment that reimagines how we interact with study materials. Instead of organizing notes into folders, subjects become **constellations in a visual, interactive space** — where you connect ideas the same way stars form patterns in the night sky.
 
----
-
-## 🕹️ System Features & Interaction Mechanics
-
-* **Spatial Concept Mapping:** Leverages custom hand-tracking layers to bridge nodes in a 3D HTML5 Canvas environment. Connecting separate star nodes dynamically constructs non-linear data graphs.
-* **Contextual Data Drawers:** A highly responsive UI overlay that catches hover states based on user intent. It expands detailed subject matrices, engineering formulas, and media panels on the fly.
-* **Interactive Knowledge Challenges:** Active recall modules that map abstract engineering questions directly to live canvas tracking states.
-* **Speed-Run Memory Protocols:** A gamified, time-attack recall environment utilizing blinking nodes to rigorously test cognitive retention under a ticking clock.
+It started with one question: **Can learning feel a little more visual, interactive, and immersive?**
 
 ---
 
-## 🧠 Engineering & Architectural Puzzles
+## 🚀 Features
 
-### The "Intentional Hover" Engine
-One of the toughest challenges in hand-tracked spatial UIs is avoiding **data flashing**—where passing your hand across the screen accidentally fires open sidebars and ruins user immersion. 
-
-To solve this, I designed a custom hover-engine logic. The system enforces strict spatial boundary conditions and a tailored **dwell-time threshold algorithm**. Sidebars only unfurl *after* a constellation node is formally created and targeted with deliberate user intent, aligning perfectly with human cognitive pacing.
+- **Spatial Concept Mapping** — Create star nodes for topics and connect them to build non-linear relationships between ideas
+- **Hand Gesture Controls** — Connect and interact with nodes using real-time hand tracking via MediaPipe
+- **Hover & Spatial Audio** — Hover over nodes to reveal notes with audio feedback
+- **Speedrun Mode** — A timed memory challenge to test how well you've mapped your knowledge
+- **Interactive Knowledge Challenges** — Real-time quizzes that map abstract concepts to engineering problems
+- **Immersive Constellation UI** — A fully themed, responsive dark-space interface
 
 ---
 
-## 🛠️ Technical Architecture
+## 🛠️ Built With
 
-### Tech Stack
-* **Graphics & Core Engine:** Vanilla JavaScript (ES6+), HTML5 Canvas API, and Custom CSS3
-* **Perception Layer:** Machine learning computer vision endpoints and spatial hand-gesture mapping
-* **Design Paradigm:** Non-linear Spatial Architecture & Haptic Audio Feedbacks
+- Vanilla JavaScript, HTML5 & CSS3
+- MediaPipe (browser-based hand tracking)
+- Custom interactive node system
+- Spatial UI/UX and knowledge visualization concepts
 
-### System Layout Architecture
+---
+
+## 🖥️ How to Run
+
+No installs. No setup. Just open and explore.
+
+```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/constellia.git
+
+# Open in browser
+open index.html
+```
+
+Or simply download the files and open `index.html` in any modern browser.
+
+> **Note:** Hand gesture features require camera access. Allow it when prompted.
+
+---
+
+## 💡 Why I Built This
+
+I've been fascinated by space since childhood — the idea that scattered dots could come together to form something meaningful. When I started thinking about a notes app, that image stuck with me.
+
+Constellia isn't trying to be the next productivity tool. It's a small creative experiment in making learning feel less like a chore and more like exploration.
+
+---
+
+## 📁 Project Structure
+
+```
+constellia/
+├── index.html       # Main app structure and logic
+├── style.css        # Constellation-themed UI
+└── Constellia_.png  # Preview image
+```
+
+---
+
+*Built in a weekend. Fueled by curiosity and childhood stargazing.* 🌠
