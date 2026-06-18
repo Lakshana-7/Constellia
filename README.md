@@ -40,7 +40,7 @@ No installs. No setup. Just open and explore.
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/constellia.git
+git clone https://github.com/Lakshana-7/constellia.git
 
 # Open in browser
 open index.html
