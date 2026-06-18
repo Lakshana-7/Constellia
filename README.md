@@ -2,7 +2,7 @@
 
 > *"Transforming static study data into an interactive, spatial universe."*
 
-![Constellia Preview](Constellia_.png)
+![Constellia Preview](Constellia..png)
 
 ---
 
